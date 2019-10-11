@@ -40,7 +40,13 @@ public class Addressbook_client {
 		if (ux == true){
 			that.UXi();
 		} else {
-			that.query(who);
+			try{
+				String response = "";
+				response = that.query(who);
+				that.showData(response, true);
+			}catch(Exception e){
+                System.out.println("main:error:" + e.getMessage() );
+            }
 		}
 	}
 
