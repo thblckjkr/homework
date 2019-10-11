@@ -14,12 +14,29 @@ En vez de la función `.equals`, estoy consciente de que pude haber utilizado `.
 
 ## Compiling
 
-Sólo es necesario correr el programa [compile.sh](compile.sh)
+Sólo es necesario correr el programa [compile.sh](compile.sh), el cual compila y ejecuta el programa
 
 ```sh
 ./compile.sh
 ```
 
+Si solo se requiere inicar el programa sin compilar, se puede copiar y pegar este codigo en terminal
+```sh
+serviceName="Addressbook_service"
+ip="127.0.0.1"
+port="1000"
+
+# Put the rmiregistry and the server in a background process
+sudo rmiregistry $port &
+java Addressbook_server $ip:$port $serviceName &
+
+echo "Running client in 2 seconds (server startup time)"
+sleep 2s
+java Addressbook_client $ip:$port $serviceName
+```
+
 ## Errores conocidos
 
-No
+Los errores posibles son que el cliente reciba un `CON_ERROR` y `NOT_FOUND`. Tambien es posible que el cliente no pueda conectarse al servicio si el servidor no esta corriendo. El cual mostrara un mensaje de error apropiado.
+
+> Es posible que si un usuario tiene el nombre de *CON_ERROR* o *NOT_FOUND* nos de un falso error, debido a como funciona el programa. Ahora que lo pienso, podria ser evitado si simplemente se devolviera una clase en vez de un String como tal. Pero por el momento no tengo tiempo para investigar la implementacion de ello.

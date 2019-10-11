@@ -20,7 +20,7 @@ public class Addressbook_server extends UnicastRemoteObject  implements Addressb
             BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                System.out.println(parts[partno] + ":" + mail + ":" + (parts[partno].equals(mail)) );
+                // System.out.println(parts[partno] + ":" + mail + ":" + (parts[partno].equals(mail)) );
                 if (parts[partno].equals(mail)){
                     return parts[partre];
                 }
@@ -37,7 +37,7 @@ public class Addressbook_server extends UnicastRemoteObject  implements Addressb
     
 	public static void main(String[] args) {
         // Todo. Variable with args
-        String hostName = "localhost", serviceName = "Addressbook_service";
+        String hostName = "localhost:1000", serviceName = "Addressbook_service";
 
         // If args, override defaults
 		if(args.length == 2){
@@ -54,7 +54,7 @@ public class Addressbook_server extends UnicastRemoteObject  implements Addressb
 		try{
 			Addressbook addr = new Addressbook_server();
 			Naming.rebind("rmi://"+hostName+"/"+serviceName, addr);
-			System.out.println("HelloWorld RMI Server is running...");
+			System.out.println("Corriendo servidor de direcciones");
 		}catch(Exception e){}
 	}
 }
