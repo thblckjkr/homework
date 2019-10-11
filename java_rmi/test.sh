@@ -21,10 +21,15 @@ sleep 3s
 
 # TODO: Automatize checking if response is ok
 echo "Empezando pruebas"
-java Addressbook_client $ip:$port $serviceName LB9XK
-java Addressbook_client $ip:$port $serviceName NZ4P
-java Addressbook_client $ip:$port $serviceName NULL
-java Addressbook_client $ip:$port $serviceName 0
-java Addressbook_client $ip:$port $serviceName String
-java Addressbook_client $ip:$port $serviceName CON_ERROR
-java Addressbook_client $ip:$port $serviceName NOT_FOUND
+res=$(java Addressbook_client $ip:$port $serviceName LB9XK)
+echo $res;
+res=$(java Addressbook_client $ip:$port $serviceName NULL)
+echo $res;
+res=$(java Addressbook_client $ip:$port $serviceName 0)
+echo $res;
+res=$(java Addressbook_client $ip:$port $serviceName String)
+echo $res;
+res=$(java Addressbook_client $ip:$port $serviceName CON_ERROR)
+echo $res;
+res=$(java Addressbook_client $ip:$port $serviceName NOT_FOUND)
+echo $res;
