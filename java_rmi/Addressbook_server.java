@@ -36,14 +36,18 @@ public class Addressbook_server extends UnicastRemoteObject  implements Addressb
     }
     
 	public static void main(String[] args) {
-		String hostName = "localhost:1000";
-		String serviceName = "Addressbook_service";
-		/*if(args.length == 2){
+        // Todo. Variable with args
+        String hostName = "localhost", serviceName = "Addressbook_service";
+
+        // If args, override defaults
+		if(args.length == 2){
 			hostName = args[0];
 			serviceName = args[1];
-		}*/
-		System.setProperty("java.security.policy","file:./security.policy");
-        System.setProperty("java.rmi.server.hostname","127.0.0.1");
+        }        
+
+        System.setProperty("java.security.policy","file:./security.policy");
+        // Cannot thest this on a single macine. This IP needs to change? I think not
+        System.setProperty("java.rmi.server.hostname", "127.0.0.1");
                     
         System.setSecurityManager(new RMISecurityManager());
 
