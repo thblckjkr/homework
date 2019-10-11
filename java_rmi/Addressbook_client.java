@@ -1,9 +1,10 @@
 import java.rmi.*;
-public class RMIClient {
+public class Addressbook_client {
 	public static void main(String[] args) {
 		String hostName = "localhost:1000";
-		String serviceName = "HelloWorldService";
-		String who = "Nahitt";
+		String serviceName = "Addressbook_service";
+		String who = "Teo";
+
 	/*	if(args.length == 3){
 		    hostName = args[0];
 		    serviceName = args[1];
@@ -11,14 +12,15 @@ public class RMIClient {
 		}else if(args.length == 1){
 		    who = args[0];
 		}*/
+
 		System.setProperty("java.security.policy","file:./security.policy");
-        System.setProperty("java.rmi.server.hostname","127.0.0.1");
-                    
+		System.setProperty("java.rmi.server.hostname","127.0.0.1");
+		
         System.setSecurityManager(new RMISecurityManager());
 
 		try{
-		    HelloWorld hello = (HelloWorld)Naming.lookup("rmi://"+hostName+"/"+serviceName);
-		    System.out.println(hello.sayHello(who));
+		    Addressbook addr = (Addressbook)Naming.lookup("rmi://"+hostName+"/"+serviceName);
+		    System.out.println(addr.search(who));
 		}catch(Exception e){
 		    e.printStackTrace();
 		}

@@ -1,94 +1,27 @@
-// Se importan los paquetes
-// https://docs.oracle.com/javase/10/docs/api/java/io/package-summary.html
-import java.net.*;  // DatagramSocket, DatagramPAcket, SocketException, InetAddress
-
-// https://docs.oracle.com/javase/10/docs/api/java/io/package-summary.html
 import java.io.*;   // IoException (?)
 
-/*
-    El programa no recibe argumentos al ser inicializado
-*/
-public class Addressbook_server {
-    int serverPort = 5678;
-    Protocol proto = new Protocol();
+import java.rmi.*;
+/* import java.rmi.Naming;
+import java.rmi.Remote;
+import java.rmi.RemoteException; */
+import java.rmi.server.UnicastRemoteObject;
 
-    public static void main(String args[]){
-        System.out.println("Server is running");
-        while(true){
-            Addressbook_server s = new Addressbook_server();
-            s.receive();
-        }
+public class Addressbook_server extends UnicastRemoteObject  implements Addressbook {
+	public Addressbook_server() throws RemoteException {
+		super();
     }
-
-
-    public void receive(){
-        // Crear un objeto (basicamente un manager de sockets)
-        DatagramSocket aSocket = null;
-        String response, query, mail;
-        try {
-            // Crea un nuevo socket, que escucha en el puerto 5678
-            aSocket = new DatagramSocket(this.serverPort);
-
-            // Buffer donde recibiremos datos
-            byte[] buffer = new byte[100];
-
-            while(true){
-                // Creas un paquete donde recibes datos
-                DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-
-                // Recibes los datos del socket en el paquete
-                aSocket.receive(request);
-                query = new String(request.getData());
-                query = query.trim();
-
-                if( !proto.validate(query, true)){
-                    response = "INVALID_Q";
-                }
-
-                mail = proto.getData(query);
-                response = this.search(mail);
-                try{
-                    response = proto.CreateMessage(response, false);
-                }catch(Exception e){
-                    System.out.println("main:error:" + e.getMessage() );
-                }
-
-                // Creas un paquete para responder, con los datos del que envia
-
-                DatagramPacket reply = new DatagramPacket(
-                    response.getBytes("utf-8"),
-                    response.length(),
-                    request.getAddress(),
-                    request.getPort()
-                );
-
-            // Respondes por el mismo socket donde recibiste los datos
-                aSocket.send(reply);
-            }
-        } catch (SocketException e) {
-            // Si el socket falla, nos informa
-            System.out.println("Socket: " + e.getMessage());
-        } catch (IOException e) {
-            // Si falla... Algo, nos informa
-            System.out.println("IO: " + e.getMessage());
-        }
-        finally {
-            // Si se pudo inicializar el socket, lo destruye al finalizar
-            if(aSocket != null)
-                aSocket.close();
-        }
-    }
-
-    public String search(String mail) {
+    
+    public String search(String mail){
+        // Todo. Implement search as a class and preload the database in memory [just a named array]
         int partno = 1; int partre = 0;
         String line = null;
-        try 
+        try
         {
             BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                System.out.println(parts[partno] + ":" + mail + ":" + (parts[partno].trim() == mail));
-                if (parts[partno].trim() == mail){
+                System.out.println(parts[partno] + ":" + mail + ":" + (parts[partno].equals(mail)) );
+                if (parts[partno].equals(mail)){
                     return parts[partre];
                 }
             }
@@ -101,4 +34,23 @@ public class Addressbook_server {
         }
         return "NOT_FOUND";
     }
+    
+	public static void main(String[] args) {
+		String hostName = "localhost:1000";
+		String serviceName = "Addressbook_service";
+		/*if(args.length == 2){
+			hostName = args[0];
+			serviceName = args[1];
+		}*/
+		System.setProperty("java.security.policy","file:./security.policy");
+        System.setProperty("java.rmi.server.hostname","127.0.0.1");
+                    
+        System.setSecurityManager(new RMISecurityManager());
+
+		try{
+			Addressbook addr = new Addressbook_server();
+			Naming.rebind("rmi://"+hostName+"/"+serviceName, addr);
+			System.out.println("HelloWorld RMI Server is running...");
+		}catch(Exception e){}
+	}
 }
