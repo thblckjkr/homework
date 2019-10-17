@@ -1,0 +1,4 @@
+
+			interface HelloWorldService{
+				string sayHello(in string who);
+      };
