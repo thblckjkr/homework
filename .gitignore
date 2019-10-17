@@ -1,2 +1,6 @@
 # Ignore java class (*compilation*)
 *.class
+
+*Service*.java
+!*ServiceImpl.java
+orb.db
