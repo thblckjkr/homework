@@ -9,17 +9,17 @@ javac *.java || exit
 killall orbd
 killall java
 
-## orbd needs this (?)
-sudo su
-
 # Start something (?)
+sleep 2s
 echo "Starting background shit"
-sudo orbd -ORBInitialPort 1070 -ORBInitialHost localhost &
+orbd -ORBInitialPort 1070 -ORBInitialHost localhost &
 
 # Run server on background
+sleep 2s
 echo "Starting server"
-java HelloWorldServer -ORBInitialPort 1070 -ORBInitialHost localhost &
+java Addressbook_server -ORBInitialPort 1070 -ORBInitialHost localhost &
 
+sleep 2s
 # Run client
 echo "Starting Client"
-java HelloWorldClient -ORBInitialPort 1070 -ORBInitialHost localhost
+java Addressbook_client -ORBInitialPort 1070 -ORBInitialHost localhost

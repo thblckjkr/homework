@@ -1,53 +1,24 @@
-import java.rmi.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+import org.omg.CORBA.*;
+
 import java.util.Scanner;; // Streamer, to take input from keyboard
 
 public class Addressbook_client {
-	private String hostName = "127.0.0.1:1000", serviceName = "Addressbook_service";
-
+    ORB orb;
 	public static void main(String[] args) {
-		String who = "Teo";
-		Boolean ux = false;
-
 		// Generate a instance of the class
 		Addressbook_client that = new Addressbook_client();
+
 		try{
-			that.init();
+			// create and initialize the ORB
+			that.orb = ORB.init(args, null);
 		} catch(Exception e){
 			e.printStackTrace();
 		}
 
-		// Grab arguments and proceed as necessary
-		if(args.length == 3){
-			// If three args, then run a single client instance (usefull for tests)
-		    that.hostName = args[0];
-		    that.serviceName = args[1];
-			who = args[2];
-		}else if(args.length == 2){
-			// Just override hostname, and run on UX (Default)
-			that.hostName = args[0];
-			that.serviceName = args[1];
-			ux = true;
-		}else if(args.length == 1){
-			// If just one arg, then run a single client (tests)
-		    who = args[0];
-		}else{
-			// Seria posible el caso de 0 argumentos, iniciar la UX con los datos default del servidor. Pero meh
-			System.out.println("Por favor revise el archivo readme.md, para ver como correr el programa");
-		}
-
-
 		// start UX interface if necessary
-		if (ux == true){
-			that.UXi();
-		} else {
-			try{
-				String response = "";
-				response = that.query(who);
-				that.showData(response, true);
-			}catch(Exception e){
-                System.out.println("main:error:" + e.getMessage() );
-            }
-		}
+        that.UXi();
 	}
 
 	public void UXi(){
@@ -99,17 +70,17 @@ public class Addressbook_client {
 	}
 
 	public String query(String mail){
-		try{
-			System.setProperty("java.security.policy","file:./security.policy");
-			System.setProperty("java.rmi.server.hostname","127.0.0.1");
-			System.setSecurityManager(new RMISecurityManager());
+        try{
+            // get the root naming context
+            org.omg.CORBA.Object objRef = this.orb.resolve_initial_references("NameService");
+                
+            // Use NamingContextExt instead of NamingContext, part of the Interoperable naming Service.  
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 
-		    Addressbook addr = (Addressbook)Naming.lookup("rmi://"+this.hostName+"/"+this.serviceName);
-		    return addr.search(mail);
-		}catch(Exception e){
-			System.out.println("Parece que el servidor no esta corriendo, o se ha detenido");
-		    e.printStackTrace();
-		}
-		return "CONN_ERROR";
+            // resolve the Object Reference in Naming
+            AddressbookService Addressbook = AddressbookServiceHelper.narrow(ncRef.resolve_str("AddressbookService"));
+            return Addressbook.search(mail);
+        }catch(Exception e){}
+        return "NOT_FOUND";
 	}
 }

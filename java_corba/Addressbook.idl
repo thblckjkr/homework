@@ -1,4 +1,4 @@
 
 interface AddressbookService{
-    public string search(in string mail);
+    string search(in string mail);
 };
