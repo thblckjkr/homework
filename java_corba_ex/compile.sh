@@ -10,11 +10,10 @@ killall orbd
 killall java
 
 ## orbd needs this (?)
-sudo su
 
 # Start something (?)
 echo "Starting background shit"
-sudo orbd -ORBInitialPort 1070 -ORBInitialHost localhost &
+orbd -ORBInitialPort 1070 -ORBInitialHost localhost &
 
 # Run server on background
 echo "Starting server"
