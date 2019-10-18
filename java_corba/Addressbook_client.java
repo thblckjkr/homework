@@ -81,6 +81,6 @@ public class Addressbook_client {
             AddressbookService Addressbook = AddressbookServiceHelper.narrow(ncRef.resolve_str("AddressbookService"));
             return Addressbook.search(mail);
         }catch(Exception e){}
-        return "NOT_FOUND";
+        return "CON_ERROR";
 	}
 }
