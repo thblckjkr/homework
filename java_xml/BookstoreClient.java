@@ -8,16 +8,6 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-/*
-1) Haga un programa en java que lea el archivo books.xml y liste lo siguiente:
-
-a) El nombre del autor del libro de horror
-
-b) El total de comprar todos los libros de fantasia
-
-c) la lista de todos los libros de computacion que tengan que ver con microsoft (para no leerlos)
-*/
-
 public class BookstoreClient {
     DocumentBuilderFactory builderfactory;
     DocumentBuilder builder;
@@ -29,11 +19,19 @@ public class BookstoreClient {
         System.out.println("Empezando búsqueda");
 
         x.init();
+
+        // a) El nombre del autor del libro de horror
         String author = x.getAuthor("genre", "Horror");
         System.out.println("El nombre del autor del libro de horror es " + author);
 
+        // b) El total de comprar todos los libros de fantasia
         Integer amount = x.getAmount("genre", "Fantasy");
         System.out.println("La cantidad de libros de fantasía es " + amount.toString());
+
+        // c) la lista de todos los libros de computacion que tengan que ver con microsoft (para no leerlos)
+        x.getAuthors("description", "Microsoft");
+        // String[] authors = x.getAuthors("description", "Microsoft");
+        // System.out.println(" Autores " + authors.toString() );
     }
     
     public void init(){
@@ -62,17 +60,23 @@ public class BookstoreClient {
         }catch(Exception e){}
         return "Failed";
     }
-    public String getAuthors(String parameter, String data){
+
+    public void getAuthors(String parameter, String data){
         try{
             //getting the name of the book having an isbn number == ABCD7327923
-            XPathExpression xPathExpression = this.xPath.compile("//catalog//book[" + parameter + "='" + data + "']//author");
-            String author = xPathExpression.evaluate(this.xmlDocument,XPathConstants.STRING).toString();
-            
-            return author;
+            XPathExpression xPathExpression = this.xPath.compile("//catalog//book[contains(" + parameter + ",'" + data + "')]//title");
+            NodeList node =  (NodeList) xPathExpression.evaluate(this.xmlDocument,XPathConstants.NODESET);
+    
+            for (int i = 0; i < node.getLength(); i++) {
+
+                // TODO. Add this to a list and return it
+                System.out.println( node.item(i).getTextContent()  );   
+            }
+
         }catch(Exception e){
 
         }
-        return "Failed";
+        
     }
 
     public Integer getAmount(String parameter, String data){
