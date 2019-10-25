@@ -8,6 +8,8 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import java.util.*;
+
 public class BookstoreClient {
     DocumentBuilderFactory builderfactory;
     DocumentBuilder builder;
@@ -25,13 +27,12 @@ public class BookstoreClient {
         System.out.println("El nombre del autor del libro de horror es " + author);
 
         // b) El total de comprar todos los libros de fantasia
-        Integer amount = x.getAmount("genre", "Fantasy");
-        System.out.println("La cantidad de libros de fantasía es " + amount.toString());
+        Float amount = x.getAmount("genre", "Fantasy");
+        System.out.println("La cantidad a gastar en libros de fantasía es " + amount.toString());
 
         // c) la lista de todos los libros de computacion que tengan que ver con microsoft (para no leerlos)
-        x.getAuthors("description", "Microsoft");
-        // String[] authors = x.getAuthors("description", "Microsoft");
-        // System.out.println(" Autores " + authors.toString() );
+        String[] books = x.getBooks("description", "Microsoft");
+        System.out.println("Libros de microsoft: \n\t" + String.join("\n\t", books));
     }
     
     public void init(){
@@ -61,31 +62,38 @@ public class BookstoreClient {
         return "Failed";
     }
 
-    public void getAuthors(String parameter, String data){
+    public String[] getBooks(String parameter, String data){
+        String[] response;
+        List<String> tmp = new ArrayList<String>();
         try{
-            //getting the name of the book having an isbn number == ABCD7327923
             XPathExpression xPathExpression = this.xPath.compile("//catalog//book[contains(" + parameter + ",'" + data + "')]//title");
-            NodeList node =  (NodeList) xPathExpression.evaluate(this.xmlDocument,XPathConstants.NODESET);
-    
-            for (int i = 0; i < node.getLength(); i++) {
-
-                // TODO. Add this to a list and return it
-                System.out.println( node.item(i).getTextContent()  );   
-            }
-
-        }catch(Exception e){
-
-        }
-        
-    }
-
-    public Integer getAmount(String parameter, String data){
-        try{
-            XPathExpression xPathExpression = this.xPath.compile("//catalog//book[" + parameter + "='" + data + "']");
             NodeList node = (NodeList) xPathExpression.evaluate(this.xmlDocument,XPathConstants.NODESET);
 
-            return node.getLength();
+            for (int i = 0; i < node.getLength(); i++) {
+                tmp.add( node.item(i).getTextContent() );
+            }
+
+            response = new String[ tmp.size() ];
+            tmp.toArray( response );
+        }catch(Exception e){
+            response = new String[ 0 ];
+        }
+        return response;
+    }
+
+    public Float getAmount(String parameter, String data){
+        Float total = 0.0f;
+        try{
+            XPathExpression xPathExpression = this.xPath.compile("//catalog//book[" + parameter + "='" + data + "']//price");
+            
+            NodeList node = (NodeList) xPathExpression.evaluate(this.xmlDocument,XPathConstants.NODESET);
+
+            for (int i = 0; i < node.getLength(); i++) {
+                total += Float.parseFloat( node.item(i).getTextContent() );
+            }
+
+            return total;
         }catch(Exception e){}
-        return 0;
+        return total;
     }
 }
