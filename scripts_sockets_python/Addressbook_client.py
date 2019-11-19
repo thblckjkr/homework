@@ -10,18 +10,20 @@ class Socket:
       self.s.connect((ip, port)) 
 
    def exchangeMessage(self, message):
-      self.s.send(message)
-      x = self.s.recvmsg()
 
-      print (x)
-      return x
+      self.s.send(message.encode('utf-8'))
+      x = self.s.recvmsg(255)
+
+      print (x[0])
+      return x[0].decode('utf-8')
+
+"""
+   Main code
+"""
 
 p = Protocol()
 s = Socket()
 ui = UI()
-
-
-X = p.CreateMessage("Mi mama me mima", True)
 
 ui.show("Bienvenido al sistema de consulta de correos")
 server = ui.ask("Para empezar, escribe la direccion IP del servidor")
