@@ -1,5 +1,5 @@
-	# Import of libraries
-	import re # For protocol checking with regex
+# Import of libraries
+import re # For protocol checking with regex
 
 
 class Protocol:
