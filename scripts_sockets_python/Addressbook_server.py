@@ -17,7 +17,7 @@ class Socket:
 					print (buf)
 					connection.close()
 					break
-    
+
 s = Socket()
 s.init(5678)
 s.work()

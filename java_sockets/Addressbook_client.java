@@ -1,8 +1,3 @@
-/*
-* I'm just making a proper docs of this program
-* This was just to make things easier to me and a friend, but i think it does not hurt to share
-* @thblckjkr [2019/09/07]
-*/
 // Se importan los paquetes
 
 // https://docs.oracle.com/javase/10/docs/api/java/io/package-summary.html
