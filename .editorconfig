@@ -1,5 +1,10 @@
-[*.py]
-indent_size = 3
+[*]
 tab_width = 3
 indent_style = tab
 insert_final_newline = false
+
+[*.py]
+indent_size = 3
+
+[*.rb]
+indent_size = 3

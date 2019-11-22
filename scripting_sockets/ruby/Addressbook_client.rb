@@ -1,6 +1,13 @@
 require 'socket'
+require_relative "Utils"
 
-s = TCPSocket.new 'localhost', 2000
+p = Protocol.new 
+
+a = p.CreateMessage("Message", true)
+
+puts a
+
+s = TCPSocket.new 'localhost', 5678
 
 while line = s.gets # Read lines from socket
   puts line         # and print them
