@@ -1,7 +1,6 @@
 # Import of libraries
 import re # For protocol checking with regex
 
-
 class Protocol:
 	def CreateMessage(self, data, query):
 		if len(data) > 255:
@@ -41,9 +40,9 @@ class Protocol:
 
 		return True
 
-	def getData(self, data):
+	def GetData(self, data):
 		data = data.strip()
-		return data.substring[1]
+		return data[2:]
 
 	# Teo Gonzalez Calzada [@thblckjkr] 2019/04/07
 	# Class to act as an interface to the user
