@@ -1,10 +1,46 @@
-require 'socket'
+# Import of libraries
+require 'socket'					# Import main socket library
+require_relative "Utils"		# General program utilities
+require_relative "Database"
 
-server = TCPServer.new 2000 # Server bound to port 2000
+class Socket
+	def initialize(port, db, pr, ui)
+		@@ui = ui
+		@@db = db
+		@@pr = pr
 
-loop do
-  client = server.accept    # Wait for a client to connect
-  client.puts "Hello !"
-  client.puts "Time is #{Time.now}"
-  client.close
+		ui.show("Opening port")
+
+		@@server = TCPServer.new port # Server bound to port 
+
+		ui.show("Ready to accept connections")
+	end
+
+	def work()
+		while(true)
+
+			client = @@server.accept # Wait for a client to connect
+			Thread.start(client) do | connection |
+				data = connection.gets.chomp
+				info = @@pr.getData(data)
+				
+				temp = @@db.Search( info )
+				
+				if temp != false
+					connection.puts( @@pr.CreateMessage(temp, false) )
+				else
+					connection.puts( @@pr.CreateMessage( "NOT_FOUND", false ) )
+				end
+				connection.close()
+			end
+		end
+	end
 end
+
+u = UI.new
+p = Protocol.new
+d = Database.new u
+s = Socket.new 5678, d, p, u
+
+# Initialize the socket
+s.work()
