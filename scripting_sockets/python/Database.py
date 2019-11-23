@@ -9,6 +9,7 @@ class Database:
 		ui.show( "Database loaded", "info")
 	
 	def Search(self, name):
+		name = name.rstrip('\n\0')
 		for p in self.data:
 			if p[1] == name:
 				return p[0]

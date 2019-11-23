@@ -18,14 +18,13 @@ class Socket
 
 	def work()
 		while(true)
-
 			client = @@server.accept # Wait for a client to connect
 			Thread.start(client) do | connection |
-				data = connection.gets.chomp
-				info = @@pr.getData(data)
+				data = connection.recvmsg
+				info = @@pr.getData(data[0])
 				
 				temp = @@db.Search( info )
-				
+
 				if temp != false
 					connection.puts( @@pr.CreateMessage(temp, false) )
 				else

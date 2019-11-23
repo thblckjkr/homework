@@ -13,6 +13,7 @@ class Database
 	end
 	
 	def Search(name)
+		name = name.strip
 		for p in @@data
 			if p.values[0] == name
 				return p.keys[0]

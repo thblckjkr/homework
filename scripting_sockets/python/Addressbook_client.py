@@ -12,9 +12,10 @@ class Socket:
 		self.s.connect((ip, port)) 
 
 	def exchangeMessage(self, message):
-
+		message = message + "\0"
 		self.s.send( message.encode('utf-8') )
 		x = self.s.recvmsg(254)
+		# self.s.close()
 
 		return self.pr.GetData( x[0].decode('utf-8') )
 
